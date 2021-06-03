@@ -23,6 +23,12 @@ class InMemoryEvictionRepository: EvictionRepository {
         return channelMembers[channelId] ?: emptyList()
     }
 
+    override fun removeGroupMember(member: ChannelMember) {
+        if (channelMembers.containsKey(member.channelId)) {
+            channelMembers[member.channelId]?.remove(member)
+        }
+    }
+
     fun addGroupMember(member: ChannelMember) {
         val channelMembersList = channelMembers.computeIfAbsent(member.channelId) { mutableListOf() }
         channelMembersList.add(member)
