@@ -4,7 +4,7 @@ import interfaces.EvictionRepository
 import pojo.ChannelMember
 
 class EvictionsCommandHandlerImpl(
-    val repository: EvictionRepository,
+    private val repository: EvictionRepository,
 ): EvictionsCommandHandler {
 
     override fun processEvictions(command: ProcessEvictionCommand): List<ChannelMember> {
