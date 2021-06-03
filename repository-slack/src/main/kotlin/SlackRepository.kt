@@ -46,4 +46,8 @@ class SlackRepository(
             ChannelMember(it, channelId)
         }
     }
+
+    override fun removeGroupMember(member: ChannelMember) {
+        slackMethods.conversationsKick { it.token(botToken).channel(member.channelId).user(member.id) }
+    }
 }
