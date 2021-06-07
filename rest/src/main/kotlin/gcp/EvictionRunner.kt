@@ -24,7 +24,7 @@ class EvictionRunner: HttpFunction {
             val botToken = request.getFirstQueryParameter("botToken")
             val channelId = request.getFirstQueryParameter("channelId")
             if (botToken.isPresent && channelId.isPresent) {
-                val nowInPerth = ZonedDateTime.now(ZoneId.of("Australia/Perth")).plusHours(2)
+                val nowInPerth = ZonedDateTime.now(ZoneId.of("Australia/Perth"))
                 if (nowInPerth.dayOfWeek == DayOfWeek.FRIDAY) {
                     val slackRepo = SlackRepository(botToken.get())
                     val slackComms = SlackCommsProcessor(botToken.get())
