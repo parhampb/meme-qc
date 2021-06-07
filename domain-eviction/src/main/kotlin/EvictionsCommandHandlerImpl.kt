@@ -19,6 +19,8 @@ class EvictionsCommandHandlerImpl(
 
         evictedMembers.forEach { repository.removeGroupMember(it) }
 
+        comms.sendEvictionMessage(evictedMembers )
+
         return evictedMembers
     }
 
