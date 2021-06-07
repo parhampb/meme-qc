@@ -13,7 +13,6 @@ class ProcessEvictionsCommandTest: ShouldSpec({
 
         shouldThrow<IllegalArgumentException> { ProcessEvictionCommand("", startDate, endDateValid) }
         shouldThrow<IllegalArgumentException> { ProcessEvictionCommand(" ", startDate, endDateValid) }
-        shouldThrow<IllegalArgumentException> { ProcessEvictionCommand("test", startDate, endDateValid) }
         shouldThrow<IllegalArgumentException> { ProcessEvictionCommand("test", startDate, endDateInvalid) }
     }
 })
