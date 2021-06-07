@@ -1,6 +1,7 @@
 package gcp
 
 import EvictionsCommandHandlerImpl
+import SlackCommsProcessor
 import SlackRepository
 import com.google.cloud.functions.HttpFunction
 import com.google.cloud.functions.HttpRequest
@@ -26,7 +27,8 @@ class EvictionRunner: HttpFunction {
                 val nowInPerth = ZonedDateTime.now(ZoneId.of("Australia/Perth")).plusHours(2)
                 if (nowInPerth.dayOfWeek == DayOfWeek.FRIDAY) {
                     val slackRepo = SlackRepository(botToken.get())
-                    val handler = EvictionsCommandHandlerImpl(slackRepo)
+                    val slackComms = SlackCommsProcessor(botToken.get())
+                    val handler = EvictionsCommandHandlerImpl(slackRepo, slackComms)
 
                     val previousSaturday = nowInPerth
                         .minusDays(6)

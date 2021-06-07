@@ -17,6 +17,7 @@ dependencies {
 
     implementation(project(":domain-eviction"))
     implementation(project(":repository-slack"))
+    implementation(project(":comms-slack"))
 
     invoker("com.google.cloud.functions.invoker:java-function-invoker:1.0.0-alpha-2-rc5")
 }
