@@ -1,15 +1,17 @@
 import commands.ProcessEvictionCommand
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.collections.shouldContainAll
+import memory.ConsoleCommsProcessor
 import pojo.ChannelMember
 import pojo.ChannelMessage
-import storage.InMemoryEvictionRepository
+import memory.InMemoryEvictionRepository
 import java.time.ZonedDateTime
 
 class EvictionsCommandHandlerImplTest: ShouldSpec ({
     should("return only users not within message period") {
         val repo = InMemoryEvictionRepository()
-        val handler = EvictionsCommandHandlerImpl(repo)
+        val comms = ConsoleCommsProcessor()
+        val handler = EvictionsCommandHandlerImpl(repo, comms)
 
         val now = ZonedDateTime.now()
 

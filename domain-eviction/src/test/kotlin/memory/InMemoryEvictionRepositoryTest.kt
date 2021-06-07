@@ -1,4 +1,4 @@
-package storage
+package memory
 
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.collections.shouldContainAll
