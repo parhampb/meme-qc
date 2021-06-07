@@ -26,8 +26,6 @@ task<JavaExec>("runFunction") {
     main = "com.google.cloud.functions.invoker.runner.Invoker"
     classpath(invoker)
     inputs.files(configurations.runtimeClasspath, sourceSets["main"].output)
-    println("something start")
-    println(project.findProperty("runFunction.target") ?: "")
     args(
         "--target", project.findProperty("runFunction.target") ?: "",
         "--port", project.findProperty("runFunction.port") ?: 8080
