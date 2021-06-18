@@ -1,6 +1,6 @@
-package interfaces
+package com.siliconatom.interfaces
 
-import pojo.ChannelMember
+import com.siliconatom.pojo.ChannelMember
 
 interface CommsProcessor {
     fun sendWarningMessage(daysLeft: Int, members: List<ChannelMember>)

@@ -1,11 +1,11 @@
-package memory
+package com.siliconatom.memory
 
+import com.siliconatom.pojo.ChannelMember
+import com.siliconatom.pojo.ChannelMessage
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.collections.shouldContainAll
 import io.kotest.matchers.ints.shouldBeExactly
 import io.kotest.matchers.shouldBe
-import pojo.ChannelMember
-import pojo.ChannelMessage
 import java.time.ZonedDateTime
 
 class InMemoryEvictionRepositoryTest: ShouldSpec({

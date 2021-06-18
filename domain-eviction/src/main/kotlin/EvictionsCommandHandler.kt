@@ -1,17 +1,18 @@
-import commands.ProcessEvictionCommand
-import commands.ProcessWarningCommand
-import interfaces.CommsProcessor
-import interfaces.EvictionsCommandHandler
-import interfaces.EvictionRepository
-import pojo.ChannelMember
+package com.siliconatom
+
+import com.siliconatom.commands.ProcessEvictionCommand
+import com.siliconatom.commands.ProcessWarningCommand
+import com.siliconatom.interfaces.CommsProcessor
+import com.siliconatom.interfaces.EvictionRepository
+import com.siliconatom.pojo.ChannelMember
 import java.time.ZonedDateTime
 
-class EvictionsCommandHandlerImpl(
+class EvictionsCommandHandler(
     private val repository: EvictionRepository,
     private val comms: CommsProcessor,
-): EvictionsCommandHandler {
+) {
 
-    override fun processEvictions(command: ProcessEvictionCommand): List<ChannelMember> {
+    fun processEvictions(command: ProcessEvictionCommand): List<ChannelMember> {
         val messages = repository.getMessages(command.groupId, command.from, command.to)
         val channelMembers = repository.getGroupMembers(command.groupId)
         val messagesSentUserIds = messages.distinctBy { msg -> msg.fromUserId }.map { it.fromUserId }
@@ -24,7 +25,7 @@ class EvictionsCommandHandlerImpl(
         return evictedMembers
     }
 
-    override fun processWarnings(command: ProcessWarningCommand): List<ChannelMember> {
+    fun processWarnings(command: ProcessWarningCommand): List<ChannelMember> {
         val warningUsers = getIdleUsers(command.groupId, command.from, command.to)
         comms.sendWarningMessage(command.daysNotice, warningUsers)
 

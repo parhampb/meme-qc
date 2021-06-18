@@ -1,7 +1,7 @@
-package interfaces
+package com.siliconatom.interfaces
 
-import pojo.ChannelMember
-import pojo.ChannelMessage
+import com.siliconatom.pojo.ChannelMember
+import com.siliconatom.pojo.ChannelMessage
 import java.time.ZonedDateTime
 
 interface EvictionRepository {

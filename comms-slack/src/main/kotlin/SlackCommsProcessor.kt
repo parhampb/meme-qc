@@ -1,6 +1,8 @@
+package com.siliconatom
+
+import com.siliconatom.interfaces.CommsProcessor
+import com.siliconatom.pojo.ChannelMember
 import com.slack.api.Slack
-import interfaces.CommsProcessor
-import pojo.ChannelMember
 
 class SlackCommsProcessor(
     botToken: String

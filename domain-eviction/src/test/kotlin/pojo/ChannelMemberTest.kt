@@ -1,4 +1,4 @@
-package pojo
+package com.siliconatom.pojo
 
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.ShouldSpec

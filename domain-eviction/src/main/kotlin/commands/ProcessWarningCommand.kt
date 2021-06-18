@@ -1,4 +1,4 @@
-package commands
+package com.siliconatom.commands
 
 import java.time.ZonedDateTime
 

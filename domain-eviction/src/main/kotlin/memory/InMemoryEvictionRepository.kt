@@ -1,8 +1,8 @@
-package memory
+package com.siliconatom.memory
 
-import interfaces.EvictionRepository
-import pojo.ChannelMember
-import pojo.ChannelMessage
+import com.siliconatom.interfaces.EvictionRepository
+import com.siliconatom.pojo.ChannelMember
+import com.siliconatom.pojo.ChannelMessage
 import java.time.ZonedDateTime
 
 class InMemoryEvictionRepository: EvictionRepository {

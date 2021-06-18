@@ -1,7 +1,7 @@
-package memory
+package com.siliconatom.memory
 
-import interfaces.CommsProcessor
-import pojo.ChannelMember
+import com.siliconatom.interfaces.CommsProcessor
+import com.siliconatom.pojo.ChannelMember
 
 class ConsoleCommsProcessor: CommsProcessor {
 

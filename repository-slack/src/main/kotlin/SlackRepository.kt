@@ -1,7 +1,9 @@
+package com.siliconatom
+
+import com.siliconatom.interfaces.EvictionRepository
+import com.siliconatom.pojo.ChannelMember
+import com.siliconatom.pojo.ChannelMessage
 import com.slack.api.Slack
-import interfaces.EvictionRepository
-import pojo.ChannelMember
-import pojo.ChannelMessage
 import java.time.*
 
 class SlackRepository(

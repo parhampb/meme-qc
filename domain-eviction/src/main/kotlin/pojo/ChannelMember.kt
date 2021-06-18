@@ -1,4 +1,4 @@
-package pojo
+package com.siliconatom.pojo
 
 data class ChannelMember(
     val id: String,

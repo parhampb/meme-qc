@@ -1,7 +1,9 @@
+package com.siliconatom
+
 import com.google.cloud.functions.HttpFunction
 import com.google.cloud.functions.HttpRequest
 import com.google.cloud.functions.HttpResponse
-import commands.ProcessWarningCommand
+import com.siliconatom.commands.ProcessWarningCommand
 import java.io.IOException
 import java.time.DayOfWeek
 import java.time.ZoneId
@@ -57,7 +59,7 @@ class WarningRunner: HttpFunction {
     private fun sendSlackWarning(botToken: String, channelId: String, from: ZonedDateTime, to: ZonedDateTime, days: Int) {
         val slackRepo = SlackRepository(botToken)
         val slackComms = SlackCommsProcessor(botToken)
-        val handler = EvictionsCommandHandlerImpl(slackRepo, slackComms)
+        val handler = EvictionsCommandHandler(slackRepo, slackComms)
         val command = ProcessWarningCommand(channelId, from, to, days)
 
         handler.processWarnings(command)

@@ -1,12 +1,12 @@
-package gcp
+package com.siliconatom.gcp
 
-import EvictionsCommandHandlerImpl
-import SlackCommsProcessor
-import SlackRepository
 import com.google.cloud.functions.HttpFunction
 import com.google.cloud.functions.HttpRequest
 import com.google.cloud.functions.HttpResponse
-import commands.ProcessEvictionCommand
+import com.siliconatom.EvictionsCommandHandler
+import com.siliconatom.SlackCommsProcessor
+import com.siliconatom.SlackRepository
+import com.siliconatom.commands.ProcessEvictionCommand
 import java.io.IOException
 import java.time.*
 import kotlin.jvm.Throws
@@ -28,7 +28,7 @@ class EvictionRunner: HttpFunction {
                 if (nowInPerth.dayOfWeek == DayOfWeek.FRIDAY) {
                     val slackRepo = SlackRepository(botToken.get())
                     val slackComms = SlackCommsProcessor(botToken.get())
-                    val handler = EvictionsCommandHandlerImpl(slackRepo, slackComms)
+                    val handler = EvictionsCommandHandler(slackRepo, slackComms)
 
                     val previousSaturday = nowInPerth
                         .minusDays(6)

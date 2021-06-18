@@ -1,4 +1,4 @@
-package pojo
+package com.siliconatom.pojo
 
 import java.time.ZonedDateTime
 
