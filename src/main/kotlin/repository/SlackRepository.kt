@@ -20,6 +20,7 @@ class SlackRepository(
                 .inclusive(true)
                 .latest(to.toEpochSecond().toString())
                 .oldest(from.toEpochSecond().toString())
+                .limit(1000)
         }
 
         return messages.messages.filter {
@@ -42,6 +43,7 @@ class SlackRepository(
         val members = slackMethods.conversationsMembers { req ->
             req.token(botToken)
                 .channel(channelId)
+                .limit(1000)
         }
 
         return members.members.map {
