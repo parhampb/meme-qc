@@ -6,20 +6,14 @@
 
     <groupId>com.siliconatom</groupId>
     <artifactId>meme-qc</artifactId>
-    <packaging>pom</packaging>
     <version>0.1-SNAPSHOT</version>
-    <modules>
-        <module>comms-slack</module>
-        <module>domain-eviction</module>
-        <module>repository-slack</module>
-        <module>rest</module>
-    </modules>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <kotlin.version>1.5.10</kotlin.version>
+        <kotest.version>4.6.0</kotest.version>
     </properties>
 
     <dependencies>
@@ -28,9 +22,34 @@
             <artifactId>kotlin-stdlib</artifactId>
             <version>${kotlin.version}</version>
         </dependency>
+        <dependency>
+            <groupId>io.kotest</groupId>
+            <artifactId>kotest-runner-junit5-jvm</artifactId>
+            <version>${kotest.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.kotest</groupId>
+            <artifactId>kotest-assertions-core-jvm</artifactId>
+            <version>${kotest.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.cloud.functions</groupId>
+            <artifactId>functions-framework-api</artifactId>
+            <version>1.0.4</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.slack.api</groupId>
+            <artifactId>slack-api-client</artifactId>
+            <version>1.8.1</version>
+        </dependency>
     </dependencies>
 
     <build>
+        <sourceDirectory>${project.basedir}/src/main/kotlin</sourceDirectory>
+        <testSourceDirectory>${project.basedir}/src/test/kotlin</testSourceDirectory>
         <plugins>
             <plugin>
                 <groupId>org.jetbrains.kotlin</groupId>
@@ -55,10 +74,37 @@
                         <goals>
                             <goal>test-compile</goal>
                         </goals>
+                        <configuration>
+                            <sourceDirs>
+                                <source>src/test/kotlin</source>
+                            </sourceDirs>
+                        </configuration>
                     </execution>
                 </executions>
                 <configuration>
                     <jvmTarget>11</jvmTarget>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.22.2</version>
+            </plugin>
+            <plugin>
+                <!--
+                  Google Cloud Functions Framework Maven plugin
+
+                  This plugin allows you to run Cloud Functions Java code
+                  locally. Use the following terminal command to run a
+                  given function locally:
+
+                  mvn function:run -Drun.functionTarget=your.package.yourFunction
+                -->
+                <groupId>com.google.cloud.functions</groupId>
+                <artifactId>function-maven-plugin</artifactId>
+                <version>0.9.7</version>
+                <configuration>
+                    <functionTarget>gcp.WarningRunner</functionTarget>
                 </configuration>
             </plugin>
         </plugins>
