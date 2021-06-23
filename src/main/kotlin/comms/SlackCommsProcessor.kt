@@ -20,10 +20,10 @@ class SlackCommsProcessor(
                 it.channel(channelId)
                     .mrkdwn(true)
                     .text("""
-                        # Eviction Notice
+                        *Eviction Notice*
                         Attention attention, the following members have $daysLeft day${if (daysLeft > 1) "s" else ""} to post a juicy meme or surrender their rights to use this channel
 
-                        **You have been warned $membersString**
+                        *You have been warned $membersString*
                     """.trimIndent())
             }
         }
@@ -37,7 +37,7 @@ class SlackCommsProcessor(
                 it.channel(channelId)
                     .mrkdwn(true)
                     .text("""
-                        # Eviction Update
+                        *Eviction Update*
                         Some members have been evicted since they didn't post any memes in the week...
 
                         Feels bad man
