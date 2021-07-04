@@ -46,8 +46,8 @@ The Eviction Runner schedule is setup to run at 9AM AWST on Fridays
 
 The Schedulers are configured to send a HTTP POST request to the following endpoints:
 
-- https://australia-southeast1-meme-qc.cloudfunctions.net/warning-runner
-- https://australia-southeast1-meme-qc.cloudfunctions.net/eviction-runner
+- https://australia-southeast1-<PROJECT_ID>.cloudfunctions.net/warning-runner
+- https://australia-southeast1-<PROJECT_ID>.cloudfunctions.net/eviction-runner
 
 Structure: `https://<REGION>-<PROJECT_ID>.cloudfunctions.net/<FUNCTION_NAME>`
 
