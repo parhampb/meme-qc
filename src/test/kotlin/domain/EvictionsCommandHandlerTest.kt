@@ -36,7 +36,7 @@ class EvictionsCommandHandlerTest: ShouldSpec ({
         repo.addGroupMember(ChannelMember("userF", "chnl1"))
         repo.addGroupMember(ChannelMember("userG", "chnl1"))
 
-        val command = ProcessEvictionCommand("chnl1", now, now.plusMinutes(10))
+        val command = ProcessEvictionCommand(now, now.plusMinutes(10))
         val evictionList = handler.processEvictions(command)
 
         val expectedEvictionList = listOf(

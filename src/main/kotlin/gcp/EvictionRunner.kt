@@ -8,48 +8,32 @@ import comms.SlackCommsProcessor
 import repository.SlackRepository
 import domain.commands.ProcessEvictionCommand
 import java.io.IOException
-import java.time.*
+import java.time.ZonedDateTime
+import java.time.ZoneId
+import java.time.temporal.ChronoUnit
 import kotlin.jvm.Throws
 
 class EvictionRunner: HttpFunction {
 
     @Throws(IOException::class)
     override fun service(request: HttpRequest, response: HttpResponse) {
-        /// The conditions we want to currently hardcode
-        ///     1. Make sure the method is POST
-        ///     2. Make sure that a "botToken" exists in the requests query
-        ///     3. Make sure that a "channelId" exists in the requests query
-        ///     4. Make sure the eviction script can only run on a Friday
         if (request.method == "POST") {
-            val botToken = request.getFirstQueryParameter("botToken")
-            val channelId = request.getFirstQueryParameter("channelId")
-            if (botToken.isPresent && channelId.isPresent) {
-                val nowInPerth = ZonedDateTime.now(ZoneId.of("Australia/Perth"))
-                if (nowInPerth.dayOfWeek == DayOfWeek.FRIDAY) {
-                    val slackRepo = SlackRepository(botToken.get())
-                    val slackComms = SlackCommsProcessor(botToken.get())
-                    val handler = EvictionsCommandHandler(slackRepo, slackComms)
+            val nowInPerth = ZonedDateTime.now(ZoneId.of("Australia/Perth"))
+            val currentDay = nowInPerth.dayOfWeek.value
+            val saturdayInt = 6
+            val deltaToLastSaturday = if (currentDay >= saturdayInt) currentDay - saturdayInt else currentDay + 1
+            val previousSaturday = nowInPerth.minusDays(deltaToLastSaturday.toLong()).truncatedTo(ChronoUnit.DAYS)
 
-                    val previousSaturday = nowInPerth
-                        .minusDays(6)
-                        .withHour(0)
-                        .withMinute(0)
-                        .withSecond(0)
-                        .withNano(0)
-                    val command = ProcessEvictionCommand(channelId.get(), previousSaturday, nowInPerth)
+            val botToken = System.getenv(Constants.SLACK_BOT_TOKEN)
 
-                    handler.processEvictions(command)
-                }
-            } else {
-                failResponse(response)
-            }
+            val slackRepo = SlackRepository(botToken)
+            val slackComms = SlackCommsProcessor(botToken)
+            val handler = EvictionsCommandHandler(slackRepo, slackComms)
+            val command = ProcessEvictionCommand(previousSaturday, nowInPerth)
+            handler.processEvictions(command)
         } else {
-            failResponse(response)
+            response.setStatusCode(400)
+            response.writer.write("Invalid inputs sorry (eviction runner)")
         }
-    }
-
-    private fun failResponse(response: HttpResponse) {
-        response.setStatusCode(400)
-        response.writer.write("Invalid inputs sorry (eviction runner)")
     }
 }

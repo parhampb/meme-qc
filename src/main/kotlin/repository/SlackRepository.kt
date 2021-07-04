@@ -1,22 +1,24 @@
 package repository
 
+import com.slack.api.Slack
+import com.slack.api.model.ConversationType
 import domain.interfaces.EvictionRepository
 import domain.pojo.ChannelMember
 import domain.pojo.ChannelMessage
-import com.slack.api.Slack
-import java.time.*
+import java.time.ZonedDateTime
+import java.time.Instant
+import java.time.ZoneId
 
 class SlackRepository(
-    private val botToken: String
+    botToken: String,
 ): EvictionRepository {
 
-    private val slackMethods = Slack.getInstance().methods()
+    private val slackMethods = Slack.getInstance().methods(botToken)
 
     override fun getMessages(channelId: String, from: ZonedDateTime, to: ZonedDateTime): List<ChannelMessage> {
 
         val messages = slackMethods.conversationsHistory { req ->
-            req.token(botToken)
-                .channel(channelId)
+            req.channel(channelId)
                 .inclusive(true)
                 .latest(to.toEpochSecond().toString())
                 .oldest(from.toEpochSecond().toString())
@@ -39,10 +41,16 @@ class SlackRepository(
         }
     }
 
+    override fun getGroupIds(): List<String> {
+        return slackMethods.conversationsList { req ->
+            req.excludeArchived(true)
+                .types(listOf(ConversationType.PRIVATE_CHANNEL))
+        }.channels.map { it.id }
+    }
+
     override fun getGroupMembers(channelId: String): List<ChannelMember> {
         val members = slackMethods.conversationsMembers { req ->
-            req.token(botToken)
-                .channel(channelId)
+            req.channel(channelId)
                 .limit(1000)
         }
 
@@ -52,6 +60,6 @@ class SlackRepository(
     }
 
     override fun removeGroupMember(member: ChannelMember) {
-        slackMethods.conversationsKick { it.token(botToken).channel(member.channelId).user(member.id) }
+        slackMethods.conversationsKick { it.channel(member.channelId).user(member.id) }
     }
 }

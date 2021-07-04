@@ -19,6 +19,10 @@ class InMemoryEvictionRepository: EvictionRepository {
         }
     }
 
+    override fun getGroupIds(): List<String> {
+        return channelMembers.keys.toList()
+    }
+
     override fun getGroupMembers(channelId: String): List<ChannelMember> {
         return channelMembers[channelId] ?: emptyList()
     }
