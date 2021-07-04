@@ -104,7 +104,8 @@
                 <artifactId>function-maven-plugin</artifactId>
                 <version>0.9.7</version>
                 <configuration>
-                    <functionTarget>gcp.WarningRunner</functionTarget>
+<!--                    <functionTarget>gcp.WarningRunner</functionTarget>-->
+<!--                    <functionTarget>gcp.EvictionRunner</functionTarget>-->
                 </configuration>
             </plugin>
         </plugins>
