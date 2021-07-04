@@ -62,6 +62,12 @@ The first is `function-runner`, it is setup with a single role: `Cloud Functions
 
 This allows the scheduler to invoke the gcp function through an authenticated method
 
-The second is `gh-builder`, it is setup with the following roles: `roles/cloudfunctions.developer, roles/iam.serviceAccountUser`
+The second is `gh-builder`, it is setup with the following role: `roles/cloudfunctions.developer`
+
+The following cli command needs to run after the above service account is created:
+
+`gcloud iam service-accounts add-iam-policy-binding <PROJECT_ID>@appspot.gserviceaccount.com \
+--member="serviceAccount:gh-builder@<PROJECT_ID>.iam.gserviceaccount.com" \
+--role=roles/iam.serviceAccountUser`
 
 This allows the GH Actions to deploy the functions through the gcloud cli
