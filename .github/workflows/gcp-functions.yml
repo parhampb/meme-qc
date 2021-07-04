@@ -17,9 +17,9 @@ jobs:
       - uses: google-github-actions/setup-gcloud@master
         with:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
-          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          service_account_key: ${{ secrets.GCP_DEPLOY_SERVICE_ACCOUNT_KEY }}
           export_default_credentials: true
 
-      - run: gcloud functions deploy warning-runner --entry-point gcp.WarningRunner --runtime java11 --trigger-http --memory 512MB --allow-unauthenticated
+      - run: gcloud functions deploy warning-runner --entry-point gcp.WarningRunner --runtime java11 --trigger-http --memory 256MB --region "australia-southeast2" --set-env-vars SLACK_BOT_TOKEN=${{ secrets.SLACK_BOT_TOKEN }},SLACK_SIGNING_SECRET=${{ secrets.SLACK_SIGNING_SECRET }} --quiet
 
-      - run: gcloud functions deploy eviction-runner --entry-point gcp.EvictionRunner --runtime java11 --trigger-http --memory 512MB --allow-unauthenticated
+      - run: gcloud functions deploy eviction-runner --entry-point gcp.EvictionRunner --runtime java11 --trigger-http --memory 256MB --region "australia-southeast2" --set-env-vars SLACK_BOT_TOKEN=${{ secrets.SLACK_BOT_TOKEN }},SLACK_SIGNING_SECRET=${{ secrets.SLACK_SIGNING_SECRET }} --quiet
