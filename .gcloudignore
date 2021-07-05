@@ -16,4 +16,4 @@
 target
 
 node_modules
-!include:.gitignore
+#!include:.gitignore
