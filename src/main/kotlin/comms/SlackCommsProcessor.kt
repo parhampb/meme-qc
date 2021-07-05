@@ -3,9 +3,15 @@ package comms
 import domain.interfaces.CommsProcessor
 import domain.pojo.ChannelMember
 import com.slack.api.Slack
+import com.slack.api.model.block.*
+import com.slack.api.model.block.composition.MarkdownTextObject
+import com.slack.api.model.block.composition.PlainTextObject
+import com.slack.api.model.block.composition.TextObject
+import domain.pojo.Statistic
 
 class SlackCommsProcessor(
-    botToken: String
+    botToken: String,
+    private val slackDomain: String,
 ): CommsProcessor {
 
     private val slackMethods = Slack.getInstance().methods(botToken)
@@ -42,6 +48,35 @@ class SlackCommsProcessor(
 
                         Feels bad man
                     """.trimIndent())
+            }
+        }
+    }
+
+    override fun publishStatistics(channelId: String, stats: List<Statistic>) {
+
+        if (stats.isNotEmpty()) {
+
+            val blocks = mutableListOf<LayoutBlock>(
+                HeaderBlock.builder().text(PlainTextObject("Weekly Stats Incoming :smiling_imp:", true)).build(),
+            )
+
+            stats.forEach {
+                blocks.add(DividerBlock())
+                blocks.add(SectionBlock
+                    .builder()
+                    .text(MarkdownTextObject("""
+                        *<@${it.userId}>*
+                        Highest Reacts Msg: ${it.highestReaction.second} ${if (it.highestReaction.first.isNotBlank()) "<${slackDomain}/archives/${channelId}/${it.highestReaction.first}|Reference>" else ""}
+                        Highest Replies Msg: ${it.highestRepliesTotal.second} ${if (it.highestRepliesTotal.first.isNotBlank()) "<${slackDomain}/archives/${channelId}/${it.highestRepliesTotal.first}|Reference>" else ""}
+                        Highest Replies Unique Msg: ${it.highestRepliesUnique.second} ${if (it.highestRepliesUnique.first.isNotBlank()) "<${slackDomain}/archives/${channelId}/${it.highestRepliesUnique.first}|Reference>" else ""}
+                    """.trimIndent(), false))
+                    .build()
+                )
+            }
+
+            slackMethods.chatPostMessage {
+                it.channel(channelId)
+                    .blocks(blocks)
             }
         }
     }
