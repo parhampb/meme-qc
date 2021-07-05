@@ -16,29 +16,37 @@ class SlackRepository(
     private val slackMethods = Slack.getInstance().methods(botToken)
 
     override fun getMessages(channelId: String, from: ZonedDateTime, to: ZonedDateTime): List<ChannelMessage> {
-
-        val messages = slackMethods.conversationsHistory { req ->
-            req.channel(channelId)
-                .inclusive(true)
-                .latest(to.toEpochSecond().toString())
-                .oldest(from.toEpochSecond().toString())
-                .limit(1000)
-        }
-
-        return messages.messages.filter {
-            it.subtype.isNullOrBlank()
-        }.map {
-            ChannelMessage(
-                "N/A",
-                it.user,
-                ZonedDateTime.ofInstant(
-                    Instant.ofEpochSecond(
-                        it.ts.replaceAfter(".", "")
-                            .replace(".", "").toLong()
-                    ), ZoneId.systemDefault()
-                )
+        val messages = mutableListOf<ChannelMessage>()
+        var cursor: String? = null
+        do {
+            val res = slackMethods.conversationsHistory { req ->
+                req.channel(channelId)
+                    .inclusive(true)
+                    .latest(to.toEpochSecond().toString())
+                    .oldest(from.toEpochSecond().toString())
+                    .limit(100)
+                    .cursor(cursor.orEmpty())
+            }
+            messages.addAll(res.messages.filter { it.subtype.isNullOrBlank() }
+                .map {
+                    ChannelMessage(
+                        "N/A",
+                        it.user,
+                        ZonedDateTime.ofInstant(
+                            Instant.ofEpochSecond(
+                                it.ts.replaceAfter(".", "")
+                                    .replace(".", "").toLong()
+                            ), ZoneId.systemDefault()
+                        )
+                    )
+                }
             )
-        }
+            if (res.isHasMore) {
+                cursor = res.responseMetadata.nextCursor
+            }
+        } while (res.isHasMore)
+
+        return messages
     }
 
     override fun getGroupIds(): List<String> {
