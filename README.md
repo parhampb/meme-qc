@@ -11,8 +11,8 @@ Current infra setup is on GCP
 
 The following services are being used:
 
-- 2x Cloud Functions
-- 2x Cloud Scheduler
+- 3x Cloud Functions
+- 3x Cloud Scheduler
 - 2x Service Accounts
 
 ## Github Actions:
@@ -22,11 +22,12 @@ The following secrets need to be set in github for the actions to run correctly
 - GCP_DEPLOY_SERVICE_ACCOUNT_KEY: The service account mentioned in the Service Accounts section
 - SLACK_BOT_TOKEN: More info in the Cloud Functions section
 - SLACK_SIGNING_SECRET: More info in the Cloud Functions section
+- SLACK_DOMAIN: More info in the Cloud Functions section
 
 ### Cloud Functions:
 All functions are deployed to GCP through GH actions using the gcloud cli - have a look at `.github/workflows/gcp-functions.yml`
 
-Both functions have the following runtime variables:
+All functions have the following runtime variables:
 
 - SLACK_BOT_TOKEN - This is required and used to interact with Slack as a Bot
 - SLACK_SIGNING_SECRET - Not currently used, but will be used later as a verification mechanism when more features are added to the app
@@ -35,8 +36,14 @@ Eviction Runner is one of the functions, it is responsible for evicting users fr
 
 Warning Runner is responsible for sending out warning messages to users that are about to be evicted
 
+Statistics Runner is responsible for sending out the weekly statistics for the channel on how each member's messages performed
+
+The runner requires the following runtime variables:
+
+- SLACK_DOMAIN - This is the base domain used for slack in the following form `https://<ORG>.slack.com`, no trailing slash should be added
+
 ### Cloud Scheduler
-The cloud schedulers are responsible for calling the warning runner and eviction runner functions
+The cloud schedulers are responsible for calling the warning runner, eviction runner and statistics runner functions
 
 The schedulers are setup through click ops
 
@@ -44,10 +51,13 @@ The Warning Runner schedule is currently setup to run at 9AM AWST on Wednesdays 
 
 The Eviction Runner schedule is setup to run at 9AM AWST on Fridays
 
+The Statistics Runner schedule is setup to run at 9:00:05AM AWST on Fridays - we want to make sure the eviction runner precedes this one
+
 The Schedulers are configured to send a HTTP POST request to the following endpoints:
 
 - https://australia-southeast1-<PROJECT_ID>.cloudfunctions.net/warning-runner
 - https://australia-southeast1-<PROJECT_ID>.cloudfunctions.net/eviction-runner
+- https://australia-southeast1-<PROJECT_ID>.cloudfunctions.net/statistics-runner
 
 Structure: `https://<REGION>-<PROJECT_ID>.cloudfunctions.net/<FUNCTION_NAME>`
 
