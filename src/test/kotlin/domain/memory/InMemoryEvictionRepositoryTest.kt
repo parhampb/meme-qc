@@ -50,17 +50,17 @@ class InMemoryEvictionRepositoryTest: ShouldSpec({
 
         val now = ZonedDateTime.now()
 
-        repo.addChannelMessage("chnl1", ChannelMessage("test1", "user1", now.plusSeconds(1)))
-        repo.addChannelMessage("chnl1", ChannelMessage("test2", "user2", now.plusSeconds(2)))
-        repo.addChannelMessage("chnl1", ChannelMessage("test3", "user1", now.plusSeconds(3)))
-        repo.addChannelMessage("chnl2", ChannelMessage("test4", "user3", now.plusSeconds(4)))
-        repo.addChannelMessage("chnl2", ChannelMessage("test5", "user3", now.plusSeconds(5)))
+        repo.addChannelMessage("chnl1", ChannelMessage("test1", false, "user1", now.plusSeconds(1), 0u, 0u, 0u))
+        repo.addChannelMessage("chnl1", ChannelMessage("test2", false, "user2", now.plusSeconds(2), 0u, 0u, 0u))
+        repo.addChannelMessage("chnl1", ChannelMessage("test3", false, "user1", now.plusSeconds(3), 0u, 0u, 0u))
+        repo.addChannelMessage("chnl2", ChannelMessage("test4", false, "user3", now.plusSeconds(4), 0u, 0u, 0u))
+        repo.addChannelMessage("chnl2", ChannelMessage("test5", false, "user3", now.plusSeconds(5), 0u, 0u, 0u))
 
         val channelMessages = repo.getMessages("chnl2", now, now.plusMinutes(1))
 
         val expectedChannelMessages = listOf(
-            ChannelMessage("test5", "user3", now.plusSeconds(5)),
-            ChannelMessage("test4", "user3", now.plusSeconds(4)),
+            ChannelMessage("test5", false, "user3", now.plusSeconds(5), 0u, 0u, 0u),
+            ChannelMessage("test4", false, "user3", now.plusSeconds(4), 0u, 0u, 0u),
         )
 
         channelMessages shouldContainAll expectedChannelMessages

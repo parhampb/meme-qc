@@ -6,9 +6,9 @@ import java.time.ZonedDateTime
 
 class ChannelMessageTest: ShouldSpec ({
     should("have invalid constructors") {
-        shouldThrow<IllegalArgumentException> { ChannelMessage("", "test", ZonedDateTime.now()) }
-        shouldThrow<IllegalArgumentException> { ChannelMessage(" ", "test", ZonedDateTime.now()) }
-        shouldThrow<IllegalArgumentException> { ChannelMessage("test", "", ZonedDateTime.now()) }
-        shouldThrow<IllegalArgumentException> { ChannelMessage("test", " ", ZonedDateTime.now()) }
+        shouldThrow<IllegalArgumentException> { ChannelMessage("", false, "test", ZonedDateTime.now(), 0u, 0u, 0u) }
+        shouldThrow<IllegalArgumentException> { ChannelMessage(" ", false, "test", ZonedDateTime.now(), 0u, 0u, 0u) }
+        shouldThrow<IllegalArgumentException> { ChannelMessage("test", false, "", ZonedDateTime.now(), 0u, 0u, 0u) }
+        shouldThrow<IllegalArgumentException> { ChannelMessage("test", false, " ", ZonedDateTime.now(), 0u, 0u, 0u) }
     }
 })

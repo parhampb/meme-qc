@@ -6,43 +6,35 @@ import com.google.cloud.functions.HttpResponse
 import domain.CommandHandler
 import comms.SlackCommsProcessor
 import repository.SlackRepository
-import domain.commands.ProcessWarningCommand
+import domain.commands.ProcessStatisticsCommand
 import java.io.IOException
-import java.time.ZoneId
 import java.time.ZonedDateTime
+import java.time.ZoneId
 import java.time.temporal.ChronoUnit
 import kotlin.jvm.Throws
 
-class WarningRunner: HttpFunction {
+class StatisticsRunner: HttpFunction {
 
     @Throws(IOException::class)
     override fun service(request: HttpRequest, response: HttpResponse) {
         if (request.method == "POST") {
             val nowInPerth = ZonedDateTime.now(ZoneId.of("Australia/Perth"))
             val currentDay = nowInPerth.dayOfWeek.value
-            val fridayInt = 5
-            val fridayNextWeekInt = 12
             val saturdayInt = 6
-            val deltaToNextFriday = if (currentDay <= fridayInt) fridayInt - currentDay else fridayNextWeekInt - currentDay
             val deltaToLastSaturday = if (currentDay >= saturdayInt) currentDay - saturdayInt else currentDay + 1
             val previousSaturday = nowInPerth.minusDays(deltaToLastSaturday.toLong()).truncatedTo(ChronoUnit.DAYS)
 
-            sendSlackWarning(previousSaturday, nowInPerth, deltaToNextFriday)
+            val botToken = System.getenv(Constants.SLACK_BOT_TOKEN)
+            val slackDomain = System.getenv(Constants.SLACK_DOMAIN)
+
+            val slackRepo = SlackRepository(botToken)
+            val slackComms = SlackCommsProcessor(botToken, slackDomain)
+            val handler = CommandHandler(slackRepo, slackComms)
+            val command = ProcessStatisticsCommand(previousSaturday, nowInPerth)
+            handler.processStatistics(command)
         } else {
             response.setStatusCode(400)
-            response.writer.write("Invalid inputs sorry (warning runner)")
+            response.writer.write("Invalid inputs sorry (eviction runner)")
         }
-    }
-
-    private fun sendSlackWarning(from: ZonedDateTime, to: ZonedDateTime, days: Int) {
-        val botToken = System.getenv(Constants.SLACK_BOT_TOKEN)
-        val slackDomain = System.getenv(Constants.SLACK_DOMAIN)
-
-        val slackRepo = SlackRepository(botToken)
-        val slackComms = SlackCommsProcessor(botToken, slackDomain)
-        val handler = CommandHandler(slackRepo, slackComms)
-        val command = ProcessWarningCommand(from, to, days)
-
-        handler.processWarnings(command)
     }
 }

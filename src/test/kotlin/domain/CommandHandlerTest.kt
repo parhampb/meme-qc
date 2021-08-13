@@ -9,24 +9,24 @@ import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.collections.shouldContainAll
 import java.time.ZonedDateTime
 
-class EvictionsCommandHandlerTest: ShouldSpec ({
+class CommandHandlerTest: ShouldSpec ({
     should("return only users not within message period") {
         val repo = InMemoryEvictionRepository()
         val comms = ConsoleCommsProcessor()
-        val handler = EvictionsCommandHandler(repo, comms)
+        val handler = CommandHandler(repo, comms)
 
         val now = ZonedDateTime.now()
 
-        repo.addChannelMessage("chnl1", ChannelMessage("test1", "userA", now.minusSeconds(10)))
-        repo.addChannelMessage("chnl1", ChannelMessage("test2", "userB", now.minusSeconds(9)))
-        repo.addChannelMessage("chnl1", ChannelMessage("test3", "userC", now))
-        repo.addChannelMessage("chnl1", ChannelMessage("test4", "userA", now.plusSeconds(1)))
-        repo.addChannelMessage("chnl1", ChannelMessage("test5", "userC", now.plusSeconds(2)))
-        repo.addChannelMessage("chnl1", ChannelMessage("test6", "userD", now.plusSeconds(3)))
-        repo.addChannelMessage("chnl1", ChannelMessage("test7", "userE", now.plusMinutes(10)))
-        repo.addChannelMessage("chnl1", ChannelMessage("test8", "userF", now.minusMinutes(11)))
-        repo.addChannelMessage("chnl1", ChannelMessage("test9", "userF", now.minusMinutes(12)))
-        repo.addChannelMessage("chnl1", ChannelMessage("test10", "userG", now.minusHours(1)))
+        repo.addChannelMessage("chnl1", ChannelMessage("test1", false, "userA", now.minusSeconds(10), 0u, 0u, 0u))
+        repo.addChannelMessage("chnl1", ChannelMessage("test2", false, "userB", now.minusSeconds(9), 0u, 0u, 0u))
+        repo.addChannelMessage("chnl1", ChannelMessage("test3", false, "userC", now, 0u, 0u, 0u))
+        repo.addChannelMessage("chnl1", ChannelMessage("test4", false, "userA", now.plusSeconds(1), 0u, 0u, 0u))
+        repo.addChannelMessage("chnl1", ChannelMessage("test5", false, "userC", now.plusSeconds(2), 0u, 0u, 0u))
+        repo.addChannelMessage("chnl1", ChannelMessage("test6", false, "userD", now.plusSeconds(3), 0u, 0u, 0u))
+        repo.addChannelMessage("chnl1", ChannelMessage("test7", false, "userE", now.plusMinutes(10), 0u, 0u, 0u))
+        repo.addChannelMessage("chnl1", ChannelMessage("test8", false, "userF", now.minusMinutes(11), 0u, 0u, 0u))
+        repo.addChannelMessage("chnl1", ChannelMessage("test9", false, "userF", now.minusMinutes(12), 0u, 0u, 0u))
+        repo.addChannelMessage("chnl1", ChannelMessage("test10", false, "userG", now.minusHours(1), 0u, 0u, 0u))
 
         repo.addGroupMember(ChannelMember("userA", "chnl1"))
         repo.addGroupMember(ChannelMember("userB", "chnl1"))

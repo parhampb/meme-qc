@@ -3,7 +3,7 @@ package gcp
 import com.google.cloud.functions.HttpFunction
 import com.google.cloud.functions.HttpRequest
 import com.google.cloud.functions.HttpResponse
-import domain.EvictionsCommandHandler
+import domain.CommandHandler
 import comms.SlackCommsProcessor
 import repository.SlackRepository
 import domain.commands.ProcessEvictionCommand
@@ -25,10 +25,11 @@ class EvictionRunner: HttpFunction {
             val previousSaturday = nowInPerth.minusDays(deltaToLastSaturday.toLong()).truncatedTo(ChronoUnit.DAYS)
 
             val botToken = System.getenv(Constants.SLACK_BOT_TOKEN)
+            val slackDomain = System.getenv(Constants.SLACK_DOMAIN)
 
             val slackRepo = SlackRepository(botToken)
-            val slackComms = SlackCommsProcessor(botToken)
-            val handler = EvictionsCommandHandler(slackRepo, slackComms)
+            val slackComms = SlackCommsProcessor(botToken, slackDomain)
+            val handler = CommandHandler(slackRepo, slackComms)
             val command = ProcessEvictionCommand(previousSaturday, nowInPerth)
             handler.processEvictions(command)
         } else {

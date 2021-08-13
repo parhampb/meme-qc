@@ -3,6 +3,7 @@ package repository
 import com.slack.api.Slack
 import com.slack.api.model.ConversationType
 import domain.interfaces.EvictionRepository
+import domain.pojo.CHANNEL_MESSAGE_INVALID_ID
 import domain.pojo.ChannelMember
 import domain.pojo.ChannelMessage
 import java.time.ZonedDateTime
@@ -30,14 +31,18 @@ class SlackRepository(
             messages.addAll(res.messages.filter { it.subtype.isNullOrBlank() }
                 .map {
                     ChannelMessage(
-                        "N/A",
+                        it.ts ?: CHANNEL_MESSAGE_INVALID_ID,
+                        it.botId != null,
                         it.user,
                         ZonedDateTime.ofInstant(
                             Instant.ofEpochSecond(
                                 it.ts.replaceAfter(".", "")
                                     .replace(".", "").toLong()
                             ), ZoneId.systemDefault()
-                        )
+                        ),
+                        (it.reactions ?: listOf()).map { r -> r.count }.ifEmpty { listOf(0) }.reduce { s, e -> s + e }.toUInt(),
+                        (it.replyCount ?: 0).toUInt(),
+                        (it.replyUsersCount ?: 0).toUInt(),
                     )
                 }
             )
